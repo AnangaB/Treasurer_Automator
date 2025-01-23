@@ -4,10 +4,8 @@ import pytz
 import pandas as pd
 import json
 import sys
-from pypdf import PdfWriter, PdfReader
+from pypdf import PdfWriter
 from fill_reimbursement_form import get_single_filled_req_form
-from pdf2image import convert_from_path
-
 
 #file path for common data, which is data used in all forms
 common_data_file_path = r'./Reimbursement Data/common_info.json'
@@ -24,9 +22,6 @@ grant_summary_page = r"./Reimbursement Data\Blank Forms/SFSS-Form-EventProjectSu
         - datasets containing data of full names and emails of exec = sys.argv[2]
         - past meeting minutes directory = sys.argv[3]
         - output dir for forms = sys.argv[4]
-
-
-
 """
 def get_data_via_args():
     if len(sys.argv) != 5:
@@ -50,7 +45,7 @@ def get_data_via_args():
     common_info["date_today"]=  datetime.now(pytz.timezone('US/Pacific')).strftime('%Y-%m-%d')
 
     #get csv of reimbursement requests
-    requests = pd.read_csv(reimburesement_requests_file_path)
+    requests = pd.read_csv(reimburesement_requests_file_path, encoding='ISO-8859-1')
     
     execs_data_file_path =  sys.argv[2]
     execs_data = pd.read_csv(execs_data_file_path)
@@ -60,9 +55,9 @@ def get_data_via_args():
 
     return common_info, execs_data, requests, meeting_mins_dir, output_dir
 
-    """ Creates a pdf, that contains all filled in cheque requestions for funds
+    """ Creates a pdf, that contains all filled in cheque requestions for funds. The add_blank_pages is a boolean that will add extra blank pages between forms and meeting minutes.
     """
-def complete_all_individual_requests(requests, common_info, execs_data, meeting_mins_folder):
+def complete_all_individual_requests(requests, common_info, execs_data, meeting_mins_folder, add_blank_pages: bool = False):
     
     #will contain all forms for requests reimbursements
     all_filled_forms = PdfWriter()
@@ -74,25 +69,31 @@ def complete_all_individual_requests(requests, common_info, execs_data, meeting_
         if not filtered_exec.empty:
             exec_email = filtered_exec["Email"].values[0] 
 
-        filled_form = get_single_filled_req_form(common_info, payee_details, exec_email)
+        filled_form = get_single_filled_req_form(common_info, payee_details, exec_email,1)
         all_filled_forms.add_page(filled_form)
         #add blank page after
-        all_filled_forms.add_blank_page()
+        if add_blank_pages:
+            all_filled_forms.add_blank_page()
+
         #append relevant meeting minutes pdf as well
         mins_file_path = os.path.join(meeting_mins_folder, payee_details["Minutes File"])
         all_filled_forms.append(mins_file_path)
-        #add blank page, if 
-        if len(all_filled_forms.pages) % 2 != 0:
+        
+        #add blank page to the end, if the last page currently does not already end on the back side
+        if add_blank_pages and len(all_filled_forms.pages) % 2 != 0:
             all_filled_forms.add_blank_page()
+
 
 
     requests.apply(fill_form, axis=1)
     return all_filled_forms
 
-def append_grant_summary_page_to_pdf(pdf_writer):
-        #add blank page, if 
-        if len(pdf_writer.pages) % 2 != 0:
+def append_grant_summary_page_to_pdf(pdf_writer, add_blank_pages: bool = False):
+        #add blank page to the end, if the last page currently does not already end on the back side
+        if add_blank_pages and  len(pdf_writer.pages) % 2 != 0:
             pdf_writer.add_blank_page()
+
+     
         pdf_writer.append(grant_summary_page)
 
         return pdf_writer
