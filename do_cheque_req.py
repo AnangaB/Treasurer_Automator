@@ -25,7 +25,7 @@ grant_summary_page = r"./Reimbursement Data\Blank Forms/SFSS-Form-EventProjectSu
 """
 def get_data_via_args():
     if len(sys.argv) != 5:
-        print("Error: Invalid Input Passed in terminal. A command should be of the form:\n python fill_up_cheque_req.py dir/input_file.csv output_file_dir")
+        print("Error: Invalid Input Passed in terminal. A command should be of the form:\n python fill_up_cheque_req.py dir/input_file.csv dir/exec_data.csv dir/Meeting Mins Folder output_file_dir")
         sys.exit(1)
 
     # get file path of excel file that contains reimburesements values that need to be added into forms
@@ -82,8 +82,6 @@ def complete_all_individual_requests(requests, common_info, execs_data, meeting_
         #add blank page to the end, if the last page currently does not already end on the back side
         if add_blank_pages and len(all_filled_forms.pages) % 2 != 0:
             all_filled_forms.add_blank_page()
-
-
 
     requests.apply(fill_form, axis=1)
     return all_filled_forms
