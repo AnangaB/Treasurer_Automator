@@ -16,7 +16,7 @@ This program also comes equipped with two forms my school's student society, Sim
 
 ## Folder Structure
 
-The project is typically be organized as follows:
+The project is typically organized as follows:
 ```
 Treasurer_Automator/
 │
@@ -35,13 +35,42 @@ Treasurer_Automator/
 ├── README.md                        # Documentation for the project
 
 ```
+
 ## Running the program
+
+1. **Clone the Repository**
+
+```
+git clone https://github.com/AnangaB/Treasurer_Automator.git
+cd Treasurer_Automator
+```
+
+2. **Install Required Dependencies.** Ensure you have Python installed, then install any necessary libraries using:
+```
+pip install -r requirements.txt
+```
+3. **Run the Script**
 
 Use the following command to execute the main script:
 
 ```
- python .\do_cheque_req.py './Reimbursement Data/cheque_req_requests.csv'  './Reimbursement Data/exec_data.csv'  './Reimbursement Data/Meeting Minutes' './Reimbursement Data/Output'
-
+python .\do_cheque_req.py './Reimbursement Data/cheque_req_requests.csv' './Reimbursement Data/exec_data.csv' './Reimbursement Data/Meeting Minutes' './Reimbursement Data/Output'
 ```
 
 
+Above you can replace the current sample datas (e.g., ./Reimbursement Data/cheque_req_requests.csv) with your own relevant data.
+
+- cheque_req_requests.csv: Delete the current sample dummy data here and update with your own reimbursement request details here. When you are adding a new row for a reimbursement, set it's "Form Created" value to FALSE, so when program runs, it will generate forms for this row.
+- exec_data.csv: Update this file with the relevant executive and other people's information, such as names, roles, and contact details, so whenever their full name appears in the cheque_req_requests.csv file, the program can fetch more details about them for the forms.
+- Meeting Minutes/: Replace this folder with meeting minutes specific to your society or student union.
+
+
+4. **Review Outputs.** Completed reimbursement forms will be saved in the output directory, passed in step 3.
+
+- File Naming Convention: Each PDF will be named with the current date in the format YYYY-MM-DD, followed by the type of reimbursement (eg. core or grant).
+- Core Reimbursements: All reimbursements originating from the union or club’s core will be appended into a single PDF. Relevant meeting minutes are included after each cheque requisition form in the PDF.
+- Grant-Based Reimbursements: Reimbursements involving grants are grouped by grant number. Each group is saved as a separate PDF, with the grant number included in the file name. These PDFs also include an Event Summary Form appended at the end.
+
+### Managing Reimbursements for Multiple Clubs or Societies
+
+To manage reimbursements for multiple clubs or societies, simply create a separate folder for each club following the same structure as the ```Reimbursement Data/``` folder. Then, when running the program in Step 3 above, use the new folder's paths as input parameters.
