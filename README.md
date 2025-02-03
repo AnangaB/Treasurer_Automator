@@ -2,6 +2,8 @@
 
 This python program was created by me, in order to speed up my tasks as a Treasurer in the SFU Math Student Union. As a treasurer, tasks can get very tedious, as it involves filling out a lot of reimbursement forms for other executives in my union, with essentially similar information each time. To address this, the program automates the process by referencing commonly used data files and generating the required forms efficiently.
 
+### Note: Due to certain issues with pypdf, the filled PDFs may not display correctly in some viewers. In my experience, opening the PDF in Microsoft Edge or Chrome and printing it to PDF resolves the problem.
+
 This program requires 4 things:
 
 - **A CSV file of reimbursement requests**: This file contains the details of each reimbursement, such as the requester, amount, purpose, the meeting minutes the reimbursement was motioned for and whether this reimbursement's forms have been created yet. This file will be constantly changing, as new reimbursement data is created.
